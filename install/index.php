@@ -11,10 +11,12 @@ Class imageimport extends CModule {
 	public function __construct() {}
 	public function DoInstall() {
 		RegisterModule('imageimport');
+		CopyDirFiles($_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/imageimport/install/admin', $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin');
 		return true;
 	}
 	public function DoUninstall() {
 		COption::RemoveOption('imageimport');
+		DeleteDirFiles($_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/imageimport/install/admin', $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin');
 		UnRegisterModule('imageimport');
 		return true;
 	}
