@@ -2,8 +2,8 @@
 Class imageimport extends CModule {
 
 	public $MODULE_ID = 'imageimport';
-	public $MODULE_VERSION = '11.0.05';
-	public $MODULE_VERSION_DATE = '2012-04-26 11:00:00';
+	public $MODULE_VERSION = '11.0.06';
+	public $MODULE_VERSION_DATE = '2012-04-26 16:00:00';
 	public $MODULE_NAME = 'Image Import';
 	public $MODULE_DESCRIPTION = 'Folder image import';
 	public $MODULE_GROUP_RIGHTS = 'Y';

@@ -1,7 +1,6 @@
 <?
 IncludeModuleLangFile(__FILE__);
 
-
 $aMenu = array(
 	'parent_menu' => 'global_menu_services',
 	'section' => 'imageimport',
