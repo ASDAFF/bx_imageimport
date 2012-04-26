@@ -3,9 +3,6 @@ if (!$USER->IsAdmin()) return;
 
 IncludeModuleLangFile(__FILE__);
 
-// print '<pre>';
-// print_r($_POST);
-// print '</pre>';
 if ($REQUEST_METHOD == 'POST') {
 	COption::SetOptionString('imageimport', 'search_dir', $_POST['search_dir'], false);
 	COption::SetOptionString('imageimport', 'rel_dir', $_POST['rel_dir'], false);
@@ -23,14 +20,6 @@ if ($REQUEST_METHOD == 'POST') {
 		'HTML' => false,
 	));
 }
-
-
-		// CAdminMessage::ShowMessage(array(
-		// 	"MESSAGE" => $status_title,
-		// 	"DETAILS" =>  $status_msg,
-		// 	"TYPE" => "OK",
-		// 	"HTML" => true));
-
 
 $iblock_saved = COption::GetOptionString('imageimport', 'iblock', '0');
 $rel_dir = COption::GetOptionString('imageimport', 'rel_dir', 'document');
