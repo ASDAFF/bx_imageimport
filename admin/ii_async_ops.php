@@ -49,8 +49,9 @@ function format_iblocks($iblocks) {
 	return $sOut;
 }
 function format_sections($sections) {
-	$sOut = sprintf('<option>%s</option>', GetMessage('II_ROOT_SECTION'));
+	$sOut = '';
 	foreach ($sections as $section)
 		$sOut .= sprintf('<option value="%s">%s</option>', $section['ID'], $section['NAME']);
+	$sOut .= sprintf('<option>%s</option>', GetMessage('II_ROOT_SECTION'));
 	return $sOut;
 }

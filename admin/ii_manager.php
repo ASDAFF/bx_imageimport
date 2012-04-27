@@ -29,6 +29,14 @@ foreach($arIBlockTypeList as $i => $iblock_type) {
 <?
 if (isset($_POST['form_id']) and $_POST['form_id'] == 'ii_manager_form') {
 	// save data
+	COption::SetOptionString('imageimport', 'search_dir', $_POST['search_dir']);
+	COption::SetOptionString('imageimport', 'rel_dir', $_POST['rel_dir']);
+	COption::SetOptionString('imageimport', 'clear_after', ($_POST['clear_after']=='on')?'Y':'N');
+	
+	COPtion::SetOptionString('imageimport', 'type', $_POST['select-type']);
+	COption::SetOptionString('imageimport', 'siblock', $_POST['select-iblock']);
+	COPtion::SetOptionString('imageimport', 'section', $_POST['select-section']);
+
 	// check data
 	// make import
 } 
