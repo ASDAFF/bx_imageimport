@@ -31,6 +31,7 @@ $MESS['II_OPT_HEADING_COMMON_IMPORT'] = 'Настройки импорта';
 $MESS['II_OPT_HEADING_COMMON_TARGET'] = 'Цель импорта';
 $MESS['II_OPT_TARGER_IBLOCK'] = 'Импортировать в информационный блок';
 $MESS['II_OPT_REL_TARGET_MEDIALIB'] = 'Импортировать в медиабиблиотеку';
+$MESS['II_OPT_SECTION_ROOT'] = '<Корневой раздел инфоблока>';
 
 
 

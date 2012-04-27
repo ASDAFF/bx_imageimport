@@ -2,20 +2,17 @@
 require_once($_SERVER["DOCUMENT_ROOT"] . '/bitrix/modules/main/include/prolog_admin_before.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/bitrix/modules/imageimport/prolog.php');
 require_once($_SERVER["DOCUMENT_ROOT"] . '/bitrix/modules/main/include/prolog_admin_after.php');
-
 IncludeModuleLangFile(__FILE__);
-
 $APPLICATION->SetTitle(GetMessage('II_MANAGER_TITLE'));
 ?>
 
 <?
-
 $iblock_saved = COption::GetOptionString('imageimport', 'iblock', '0');
 $rel_dir = COption::GetOptionString('imageimport', 'rel_dir', 'document');
 $target = COption::GetOptionString('imageimport', 'target', 'iblock');
 
 
-if (!CModule::IncludeModule('iblock')) return;
+if (!CModule::IncludeModule('iblock')) die();
 
 $rIBlockTypeList = CIBlockType::GetList(
 	array('SORT' => 'ASC'),
@@ -27,20 +24,19 @@ foreach($arIBlockTypeList as $i => $iblock_type) {
 	$iblock_lang_settings = CIBlockType::GetByIDLang($iblock_type['ID'], LANGUAGE_ID, true);
 	$arIBlockTypeList[$i]['NAME'] = $iblock_lang_settings['NAME'];
 }
+?>
 
-
-$rIBlockList = CIBlock::GetList(
-	array('SORT' => 'ASC'),
-	array(),
-	false
-);
-$arIBlockList = array();
-while ($iblock = $rIBlockList->GetNext()) $arIBlockList[] = $iblock; 
-
+<?
+if (isset($_POST['form_id']) and $_POST['form_id'] == 'ii_manager_form') {
+	// save data
+	// check data
+	// make import
+} 
 
 ?>
-<form method="POST" action="<?= $APPLICATION->GetCurPage()?>?lang=<?= LANGUAGE_ID?>" name="ii_manager_form">
 
+<form method="POST" action="<?= $APPLICATION->GetCurPage()?>?lang=<?= LANGUAGE_ID?>" name="ii_manager_form">
+	<input type="hidden" name="form_id" value="ii_manager_form" />
 <?
 $aTabs = array(
 	array(
@@ -117,10 +113,10 @@ $tabControl->BeginNextTab();
 
 <tr>
 	<td>
-		<label for='iblock_type_id'><?=GetMessage('II_OPT_LABEL_TYPE')?></label>
+		<label for='select-type'><?=GetMessage('II_OPT_LABEL_TYPE')?></label>
 	</td>
 	<td>
-		<select name='iblock_type_id' id='iblock_type_id'>
+		<select name='select-type' id='select-type'>
 				<option value="notype"></option>
 			<? foreach($arIBlockTypeList as $iblock_type): ?>
 				<option value="<?=$iblock_type['ID']?>"><?=$iblock_type['NAME']?></option>
@@ -131,55 +127,56 @@ $tabControl->BeginNextTab();
 
 <tr>
 	<td>
-		<label for="iblock_id"><?=GetMessage('II_OPT_LABEL_IBLOCK')?></label>
+		<label for="select-iblock"><?=GetMessage('II_OPT_LABEL_IBLOCK')?></label>
 	</td>
 	<td>
-		<select name='select-notype' id="select-notype" style="font-style:italic;">
-				<option value="0"><?=GetMessage('II_OPT_SELECT_IBLOCK_TYPE_FIRST')?></option>
+		<select name="select-iblock" id="select-iblock">
 		</select>
-		<? foreach($arIBlockTypeList as $iblock_type): ?>
-		<select name="select-<?=$iblock_type['ID']?>" id="select-<?=$iblock_type['ID']?>">
-			<? foreach ($arIBlockList as $iblock): ?>
-				<? if ($iblock_type['ID'] == $iblock['IBLOCK_TYPE_ID']): ?>
-				<option value="<?=$iblock['ID']?>"<? if ($iblock_saved == $iblock['ID']): ?> selected="selected"<? endif; ?>><?=$iblock['NAME']?></option>
-				<? endif; ?>
-			<? endforeach; ?>
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<label for="select-section"><?=GetMessage('II_OPT_LABEL_SECTION')?></label>
+	</td>
+	<td>
+		<select name="select-section" id="select-section">
 		</select>
-		<? endforeach; ?>
 	</td>
 </tr>
 
 <script type="text/javascript">
-var ii_select_classes = [];
-ii_select_classes.push('select-notype');
-<? foreach($arIBlockTypeList as $iblock_type): ?>
-ii_select_classes.push('select-' + '<?=$iblock_type['ID']?>');
-<? endforeach; ?>
-
-var ii_type_select = document.getElementById('iblock_type_id');
-ii_type_select.value = '<?=COption::GetOptionString('imageimport', 'iblock_type', 'notype')?>';
-
-function iiSwitchSelect() {
-	for(var i = 0; i < ii_select_classes.length; i++) {
-		var current_select = document.getElementById(ii_select_classes[i]);
-		current_select.style.display = 'none';
+;(function(){
+	
+	function get_place_iblocks(select_type, select_iblock, select_section) {
+		CHttpRequest.Action = function(result) {
+			select_iblock.innerHTML = result;
+			select_section.innerHTML = '';
+		}
+		CHttpRequest.Send('ii_async_ops.php?op=iblock&id=' + select_type.value);
 	}
-	var current_select = document.getElementById('select-' + ii_type_select.value);
-	current_select.style.display = 'block';
-}
 
-iiSwitchSelect();
-ii_type_select.onchange = iiSwitchSelect;
+	function get_place_sections(select_iblock, select_section) {
+		CHttpRequest.Action = function(result) {
+			select_section.innerHTML = result;
+		}
+		CHttpRequest.Send('ii_async_ops.php?op=section&id=' + select_iblock.value);
+	}
+
+	var select_type = document.getElementById('select-type');
+	var select_iblock = document.getElementById('select-iblock');
+	var select_section = document.getElementById('select-section');
+
+	select_type.onchange = function() {
+		get_place_iblocks(select_type, select_iblock, select_section);
+	}
+
+	select_iblock.onchange = function() {
+		get_place_sections(select_iblock, select_section);
+	}
+
+})();
 </script>
-
-
-
-
-
-
-
-
-
 
 
 
