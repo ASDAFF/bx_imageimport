@@ -43,7 +43,7 @@ function get_sections_by_iblock_id($id) {
 }
 
 function format_iblocks($iblocks) {
-	$sOut = sprintf('<option>%s</option>', GetMessage('II_CHOSE_IBLOCK'));
+	$sOut = sprintf('<option value="0">%s</option>', GetMessage('II_CHOSE_IBLOCK'));
 	foreach ($iblocks as $iblock)
 		$sOut .= sprintf('<option value="%s">%s</option>', $iblock['ID'], $iblock['NAME']);
 	return $sOut;

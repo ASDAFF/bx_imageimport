@@ -34,13 +34,25 @@ if (isset($_POST['form_id']) and $_POST['form_id'] == 'ii_manager_form') {
 	COption::SetOptionString('imageimport', 'clear_after', ($_POST['clear_after']=='on')?'Y':'N');
 	
 	COPtion::SetOptionString('imageimport', 'type', $_POST['select-type']);
-	COption::SetOptionString('imageimport', 'siblock', $_POST['select-iblock']);
+	COption::SetOptionString('imageimport', 'iblock', $_POST['select-iblock']);
 	COPtion::SetOptionString('imageimport', 'section', $_POST['select-section']);
+	
+	CAdminMessage::ShowMessage(array(
+		'MESSAGE' => GetMessage('II_OPT_SAVED_OK_TITLE'),
+		'DETAILS' => GetMessage('II_OPT_SAVED_OK_MSG'),
+		'TYPE' => 'OK',
+		'HTML' => false,
+	));
 
 	// check data
 	// make import
 } 
 
+$options_save = array(
+	'rel_dir' => COption::GetOptionString('imageimport', 'rel_dir', 'document'),
+	'iblock_type' => COption::GetOptionString('imageimport', 'type', '0'),
+	'iblock' => COption::GetOptionString('imageimport', 'iblock', '0'),
+);
 ?>
 
 <form method="POST" action="<?= $APPLICATION->GetCurPage()?>?lang=<?= LANGUAGE_ID?>" name="ii_manager_form">
@@ -79,19 +91,10 @@ $tabControl->BeginNextTab();
 		&nbsp;
 	</td>
 	<td>
-		<label><input type="radio" name ="rel_dir" value="document" <? if ($rel_dir == 'document'):?>checked="checked" <? endif; ?>/><?=GetMessage('II_OPT_REL_DIR_DOCUMENT')?></label><br />
-		<label><input type="radio" name ="rel_dir" value="server" <? if ($rel_dir == 'server'):?>checked="checked" <? endif; ?>/><?=GetMessage('II_OPT_REL_DIR_SERVER')?></label><br />
+		<label><input type="radio" name ="rel_dir" value="document" <? if ($options_save['rel_dir'] == 'document'):?>checked="checked" <? endif; ?>/><?=GetMessage('II_OPT_REL_DIR_DOCUMENT')?></label><br />
+		<label><input type="radio" name ="rel_dir" value="server" <? if ($options_save['rel_dir'] == 'server'):?>checked="checked" <? endif; ?>/><?=GetMessage('II_OPT_REL_DIR_SERVER')?></label><br />
 	</td>
 </tr>
-
-<!-- <tr>
-	<td>
-		&nbsp;
-	</td>
-	<td>
-		<label><input type="checkbox" name="recoursive" <? if (COption::GetOptionString('imageimport', 'recoursive', 'N') == 'Y'):?>checked="checked"<? endif; ?>/><?=GetMessage('II_OPT_RECOURSIVE')?></label>
-	</td>
-</tr> -->
 
 <tr>
 	<td>
@@ -107,17 +110,6 @@ $tabControl->BeginNextTab();
 		<?=GetMessage('II_OPT_HEADING_COMMON_TARGET')?>
 	</td>
 </tr>
-
-<!-- <tr>
-	<td>
-		&nbsp;
-	</td>
-	<td>
-		<label><input type="radio" name ="target" value="iblock" <? if ($target == 'iblock'):?>checked="checked" <? endif; ?>/><?=GetMessage('II_OPT_TARGER_IBLOCK')?></label><br />
-		<label><input type="radio" name ="target" value="medialib" <? if ($target == 'medialib'):?>checked="checked" <? endif; ?>/><?=GetMessage('II_OPT_REL_TARGET_MEDIALIB')?></label><br />
-	</td>
-</tr> -->
-
 
 <tr>
 	<td>
@@ -155,37 +147,45 @@ $tabControl->BeginNextTab();
 
 <script type="text/javascript">
 ;(function(){
+
+	var select_type = document.getElementById('select-type');
+	var select_iblock = document.getElementById('select-iblock');
+	var select_section = document.getElementById('select-section');
+
+	var iblock_type = '<?=$options_save['iblock_type']?>';
+	var iblock = '<?=$options_save['iblock']?>';
 	
-	function get_place_iblocks(select_type, select_iblock, select_section) {
+	function get_place_iblocks() {
 		CHttpRequest.Action = function(result) {
 			select_iblock.innerHTML = result;
-			select_section.innerHTML = '';
+			select_iblock.value = iblock;
+			get_place_sections();
 		}
 		CHttpRequest.Send('ii_async_ops.php?op=iblock&id=' + select_type.value);
 	}
 
-	function get_place_sections(select_iblock, select_section) {
+	function get_place_sections() {
 		CHttpRequest.Action = function(result) {
 			select_section.innerHTML = result;
 		}
 		CHttpRequest.Send('ii_async_ops.php?op=section&id=' + select_iblock.value);
 	}
 
-	var select_type = document.getElementById('select-type');
-	var select_iblock = document.getElementById('select-iblock');
-	var select_section = document.getElementById('select-section');
-
 	select_type.onchange = function() {
-		get_place_iblocks(select_type, select_iblock, select_section);
+		get_place_iblocks();
 	}
 
 	select_iblock.onchange = function() {
-		get_place_sections(select_iblock, select_section);
+		get_place_sections();
+	}
+
+	if(iblock_type != '0') {
+		select_type.value = iblock_type;
+		get_place_iblocks();
 	}
 
 })();
 </script>
-
 
 
 <?$tabControl->EndTab();?>
