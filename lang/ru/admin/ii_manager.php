@@ -4,9 +4,6 @@ $MESS['II_MANAGER_TAB_COMMON_NAME'] = 'Импорт изображений';
 $MESS['II_MANAGER_TAB_COMMON_TITLE'] = 'Настройки';
 $MESS['II_MANAGER_SUBMIT'] = 'Импортировать';
 
-
-
-
 $MESS['II_OPT_IB_NAME'] = 'Информационные блоки';
 $MESS['II_OPT_IB_TITLE'] = 'Настройки импорта изображений в информационные блоки';
 $MESS['II_OPT_SELECT_IBLOCK_FIRST'] = 'Нужно выбрать инфоблок.';
@@ -33,6 +30,18 @@ $MESS['II_OPT_TARGER_IBLOCK'] = 'Импортировать в информационный блок';
 $MESS['II_OPT_REL_TARGET_MEDIALIB'] = 'Импортировать в медиабиблиотеку';
 $MESS['II_OPT_SECTION_ROOT'] = '<Корневой раздел инфоблока>';
 
+$MESS['II_SEARCH_DIR_NOT_EXISTS_TITLE'] = 'Насторойки';
+$MESS['II_SEARCH_DIR_NOT_EXISTS_MSG'] = 'Указанная папка не существует';
 
+$MESS['II_SEARCH_DIR_NOT_DIR_TITLE'] = 'Настройки';
+$MESS['II_SEARCH_DIR_NOT_DIR_MSG'] = 'Указанный путь не является папкой';
+
+$MESS['II_SEARCH_DIR_EMPTY_TITLE'] = 'Настройки';
+$MESS['II_SEARCH_DIR_EMPTY_MSG'] = 'Указанная папка пуста или не содержит изображений';
+
+$MESS['II_VIS_IMPORTED'] = 'Импортировано';
+$MESS['II_VIS_NOT_IMPORTED'] = 'Ошибок';
+
+$MESS['II_NEW_IMPORT'] = 'Новый импорт';
 
 ?>

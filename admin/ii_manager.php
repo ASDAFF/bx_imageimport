@@ -7,11 +7,6 @@ $APPLICATION->SetTitle(GetMessage('II_MANAGER_TITLE'));
 ?>
 
 <?
-$iblock_saved = COption::GetOptionString('imageimport', 'iblock', '0');
-$rel_dir = COption::GetOptionString('imageimport', 'rel_dir', 'document');
-$target = COption::GetOptionString('imageimport', 'target', 'iblock');
-
-
 if (!CModule::IncludeModule('iblock')) die();
 
 $rIBlockTypeList = CIBlockType::GetList(
@@ -27,6 +22,7 @@ foreach($arIBlockTypeList as $i => $iblock_type) {
 ?>
 
 <?
+$importing = false;
 if (isset($_POST['form_id']) and $_POST['form_id'] == 'ii_manager_form') {
 	// save data
 	COption::SetOptionString('imageimport', 'search_dir', $_POST['search_dir']);
@@ -37,16 +33,65 @@ if (isset($_POST['form_id']) and $_POST['form_id'] == 'ii_manager_form') {
 	COption::SetOptionString('imageimport', 'iblock', $_POST['select-iblock']);
 	COPtion::SetOptionString('imageimport', 'section', $_POST['select-section']);
 	
-	CAdminMessage::ShowMessage(array(
+	/*CAdminMessage::ShowMessage(array(
 		'MESSAGE' => GetMessage('II_OPT_SAVED_OK_TITLE'),
 		'DETAILS' => GetMessage('II_OPT_SAVED_OK_MSG'),
 		'TYPE' => 'OK',
 		'HTML' => false,
-	));
+	));*/
 
 	// check data
-	// make import
-} 
+	$importing = true;
+	$images_to_import = array();
+	$settings_errors = array();
+	$import_dir_path = '';
+	switch ($_POST['rel_dir']) {
+		case 'document':
+			$import_dir_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $_POST['search_dir']; 
+			break;
+		case 'server':
+			$import_dir_path = $_POST['search_dir'];
+	}
+	if (!file_exists($import_dir_path)) {
+		CAdminMessage::ShowMessage(array(
+			'MESSAGE' => GetMessage('II_SEARCH_DIR_NOT_EXISTS_TITLE'),
+			'DETAILS' => GetMessage('II_SEARCH_DIR_NOT_EXISTS_MSG'),
+			'TYPE' => 'ERROR',
+			'HTML' => false,
+		));
+		$importing = false;
+	} else {
+		if (!is_dir($import_dir_path)) {
+			CAdminMessage::ShowMessage(array(
+				'MESSAGE' => GetMessage('II_SEARCH_DIR_NOT_DIR_TITLE'),
+				'DETAILS' => GetMessage('II_SEARCH_DIR_NOT_DIR_MSG'),
+				'TYPE' => 'ERROR',
+				'HTML' => false,
+			));
+			$importing = false;
+		} else {
+			$dir_handler = opendir($import_dir_path);
+				while ($dh_path = readdir($dir_handler)) {
+					if (is_file($import_dir_path . '/' . $dh_path)) {
+						$path_info = pathinfo($import_dir_path . $dh_path);
+						if (in_array($path_info['extension'], explode(',', COption::GetOptionString('imageimport', 'extentions', 'jpg,gif,png')))) {
+							$images_to_import[] = $dh_path;
+						}
+					}
+				}
+			closedir($dir_handler);
+			if (empty($images_to_import)) {
+				CAdminMessage::ShowMessage(array(
+					'MESSAGE' => GetMessage('II_SEARCH_DIR_EMPTY_TITLE'),
+					'DETAILS' => GetMessage('II_SEARCH_DIR_EMPTY_MSG'),
+					'TYPE' => 'ERROR',
+					'HTML' => false,
+				));
+				$importing = false;
+			}
+		}
+	}
+}
 
 $options_save = array(
 	'rel_dir' => COption::GetOptionString('imageimport', 'rel_dir', 'document'),
@@ -55,6 +100,20 @@ $options_save = array(
 );
 ?>
 
+<? if ($importing):?>
+<div id="ii-visual">
+	<p><?=GetMessage('II_VIS_IMPORTED')?> <span id="ii-imported">0</span> / <?=count($images_to_import)?> (<?=GetMessage('II_VIS_NOT_IMPORTED')?> <span id="ii-not-imported">0</span>)</p>
+	<div style="border:2px solid #ccc;width:400px;">
+		<div id="ii-line" style="background:#ccc;width:0%;">
+			&nbsp;
+		</div>
+	</div>
+	<p><a href="ii_manager.php"><?php print GetMessage('II_NEW_IMPORT'); ?></a></p>
+</div>
+<? endif; ?>
+
+
+<?if (!$importing):?>
 <form method="POST" action="<?= $APPLICATION->GetCurPage()?>?lang=<?= LANGUAGE_ID?>" name="ii_manager_form">
 	<input type="hidden" name="form_id" value="ii_manager_form" />
 <?
@@ -188,6 +247,7 @@ $tabControl->BeginNextTab();
 </script>
 
 
+
 <?$tabControl->EndTab();?>
 
 <?$tabControl->Buttons();?>
@@ -196,6 +256,39 @@ $tabControl->BeginNextTab();
 <?$tabControl->End();?>
 
 </form>
+<?php endif;?>
+
+<?if ($importing):?>
+<script type="text/javascript">
+;(function(){
+	var images_to_import = [];
+	<?php foreach($images_to_import as $image):?>
+	images_to_import.push('<?php print $image; ?>');
+	<?php endforeach;?>
+
+	var ii_line = document.getElementById('ii-line');
+	var ii_imported = document.getElementById('ii-imported');
+	var ii_not_imported = document.getElementById('ii-not-imported');
+
+	var ii_success = 0;
+	var ii_error = 0;
+	
+	for(var i=0; i < images_to_import.length; i++) {
+		CHttpRequest.Action = function(result) {
+			if (result == '1') {
+				ii_success++;
+				ii_imported.innerHTML = ii_success.toString();
+			} else {
+				ii_error++;
+				ii_not_imported.innerHTML = ii_error.toString();
+			}
+		}
+		CHttpRequest.Send('ii_async_worker.php?name=' + images_to_import[i]);
+	}
+})();
+</script>
+<?endif;?>
+
 
 <?
 require($_SERVER["DOCUMENT_ROOT"] . '/bitrix/modules/main/include/epilog_admin.php');
