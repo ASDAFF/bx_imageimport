@@ -108,7 +108,7 @@ $options_save = array(
 			&nbsp;
 		</div>
 	</div>
-	<p><a href="ii_manager.php"><?php print GetMessage('II_NEW_IMPORT'); ?></a></p>
+	<p id="ii-more-import"><a href="ii_manager.php"><?php print GetMessage('II_NEW_IMPORT'); ?></a></p>
 </div>
 <? endif; ?>
 
@@ -269,20 +269,23 @@ $tabControl->BeginNextTab();
 	var ii_line = document.getElementById('ii-line');
 	var ii_imported = document.getElementById('ii-imported');
 	var ii_not_imported = document.getElementById('ii-not-imported');
+	var ii_more_import = document.getElementById('ii-more-import');
 
 	var ii_success = 0;
 	var ii_error = 0;
+
+	CHttpRequest.Action = function(result) {
+		if (result == '1') {
+			ii_success++;
+			ii_imported.innerHTML = ii_success.toString();
+		} else {
+			ii_error++;
+			ii_not_imported.innerHTML = ii_error.toString();
+		}
+		ii_line.style.width = Math.round((ii_error + ii_success)/images_to_import.length*100).toString() + '%';
+	}
 	
 	for(var i=0; i < images_to_import.length; i++) {
-		CHttpRequest.Action = function(result) {
-			if (result == '1') {
-				ii_success++;
-				ii_imported.innerHTML = ii_success.toString();
-			} else {
-				ii_error++;
-				ii_not_imported.innerHTML = ii_error.toString();
-			}
-		}
 		CHttpRequest.Send('ii_async_worker.php?name=' + images_to_import[i]);
 	}
 })();
