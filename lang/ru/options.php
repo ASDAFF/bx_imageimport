@@ -23,4 +23,7 @@ $MESS['II_OPT_HEADING_COMMON_IMPORT'] = 'Настройки импорта';
 $MESS['II_OPT_HEADING_COMMON_TARGET'] = 'Цель импорта';
 $MESS['II_OPT_TARGER_IBLOCK'] = 'Импортировать в информационный блок';
 $MESS['II_OPT_REL_TARGET_MEDIALIB'] = 'Импортировать в медиабиблиотеку';
+
+$MESS['II_OPT_LABEL_FILE_TYPES'] = 'Типы файлов для поиска';
+$MESS['II_OPT_LABEL_WORKER_INTERVAL'] = 'Интервал для старта обработчиков <br />(милисекунды)';
 ?>
