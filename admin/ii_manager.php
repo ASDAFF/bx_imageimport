@@ -108,7 +108,7 @@ $options_save = array(
 			&nbsp;
 		</div>
 	</div>
-	<p id="ii-more-import"><a href="ii_manager.php"><?php print GetMessage('II_NEW_IMPORT'); ?></a></p>
+	<p id="ii-more-import" style="display: none;"><a href="ii_manager.php"><?php print GetMessage('II_NEW_IMPORT'); ?></a></p>
 </div>
 <? endif; ?>
 
@@ -266,6 +266,9 @@ $tabControl->BeginNextTab();
 	images_to_import.push('<?php print $image; ?>');
 	<?php endforeach;?>
 
+	var count_images = images_to_import.length;
+
+	var ii_interval = <?php print COption::GetOptionInt('imageimport', 'worker_interval', 1000);?>;
 	var ii_line = document.getElementById('ii-line');
 	var ii_imported = document.getElementById('ii-imported');
 	var ii_not_imported = document.getElementById('ii-not-imported');
@@ -274,8 +277,10 @@ $tabControl->BeginNextTab();
 	var ii_success = 0;
 	var ii_error = 0;
 
+	var ii_count = 0;
+
 	CHttpRequest.Action = function(result) {
-		if (result == '1') {
+		if (result.split('/')[0] == '1') {
 			ii_success++;
 			ii_imported.innerHTML = ii_success.toString();
 		} else {
@@ -284,10 +289,16 @@ $tabControl->BeginNextTab();
 		}
 		ii_line.style.width = Math.round((ii_error + ii_success)/images_to_import.length*100).toString() + '%';
 	}
-	
-	for(var i=0; i < images_to_import.length; i++) {
-		CHttpRequest.Send('ii_async_worker.php?name=' + images_to_import[i]);
-	}
+
+	var ii_controller = setInterval(function(){
+		if(ii_count < count_images) {
+			CHttpRequest.Send('ii_async_worker.php?name=' + images_to_import[ii_count]);
+			ii_count++;
+		} else {
+			ii_more_import.style.display = 'block';
+			clearInterval(ii_controller);
+		}
+	}, ii_interval);
 })();
 </script>
 <?endif;?>
