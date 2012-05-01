@@ -61,7 +61,10 @@ foreach($pictures as $title => $options) {
 				);
 				break;
 			case 'option':
-				$picture_sizes = unserialize(COption::GetOptionString('imageimport', $title . '_sizes', ''));
+				$picture_sizes = array(
+					'width' => $options['width'],
+					'height' => $options['height'],
+				);
 				break;
 		}
 		if (!empty($picture_sizes['width']) or !empty($picture_sizes['height'])) {
@@ -79,7 +82,7 @@ foreach($pictures as $title => $options) {
 				$arFields[$title] = $picture_array;
 				break;
 			case 'property':
-				$arFields['PROPERTIES'][COption::GetOptionInt('imageimport', 'property_id', 0)] = $picture_array();
+				$arFields['PROPERTIES'][$options['id']] = $picture_array();
 				break;
 		}
 	}
