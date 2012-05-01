@@ -43,5 +43,7 @@ $MESS['II_VIS_IMPORTED'] = 'Импортировано';
 $MESS['II_VIS_NOT_IMPORTED'] = 'Ошибок';
 
 $MESS['II_NEW_IMPORT'] = 'Новый импорт';
-
+$MESS['II_OPT_HEADING_COMMON_PICTURES'] = 'Изображения';
+$MESS['II_OPT_DETAIL_PICTURE'] = 'Устанавливать как детальное изображние';
+$MESS['II_OPT_PREVIEW_PICTURE'] = 'Устанавливать как изображние для анонса';
 ?>

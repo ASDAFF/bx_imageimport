@@ -25,20 +25,25 @@ foreach($arIBlockTypeList as $i => $iblock_type) {
 $importing = false;
 if (isset($_POST['form_id']) and $_POST['form_id'] == 'ii_manager_form') {
 	// save data
-	COption::SetOptionString('imageimport', 'search_dir', $_POST['search_dir']);
-	COption::SetOptionString('imageimport', 'rel_dir', $_POST['rel_dir']);
-	COption::SetOptionString('imageimport', 'clear_after', ($_POST['clear_after']=='on')?'Y':'N');
+	$text_options = array(
+		'search_dir' => 'search_dir',
+		'rel_dir' => 'rel_dir',
+		'type' => 'select-type',
+		'iblock' => 'select-iblock',
+		'section' => 'select-section',
+	);
+	foreach($text_options as $text_option => $option_id) {
+		COption::SetOptionString('imageimport', $text_option, $_POST[$option_id]);
+	}
 	
-	COPtion::SetOptionString('imageimport', 'type', $_POST['select-type']);
-	COption::SetOptionString('imageimport', 'iblock', $_POST['select-iblock']);
-	COPtion::SetOptionString('imageimport', 'section', $_POST['select-section']);
-	
-	/*CAdminMessage::ShowMessage(array(
-		'MESSAGE' => GetMessage('II_OPT_SAVED_OK_TITLE'),
-		'DETAILS' => GetMessage('II_OPT_SAVED_OK_MSG'),
-		'TYPE' => 'OK',
-		'HTML' => false,
-	));*/
+	$checkbox_options = array(
+		'clear_after',
+		'DETAIL_PICTURE',
+		'PREVIEW_PICTURE',
+	);
+	foreach($checkbox_options as $checkbox_option) {
+		COption::SetOptionString('imageimport' , $checkbox_option, ($_POST[$checkbox_option]=='on')?'Y':'N');
+	}
 
 	// check data
 	$importing = true;
@@ -204,6 +209,30 @@ $tabControl->BeginNextTab();
 	</td>
 </tr>
 
+<tr class="heading">
+	<td colspan="2" align="center">
+		<?=GetMessage('II_OPT_HEADING_COMMON_PICTURES')?>
+	</td>
+</tr>
+
+<tr>
+	<td>
+		&nbsp;
+	</td>
+	<td>
+		<label><input type="checkbox" name="DETAIL_PICTURE" <? if (COption::GetOptionString('imageimport', 'DETAIL_PICTURE', 'Y') == 'Y'):?>checked="checked"<? endif; ?>/><?=GetMessage('II_OPT_DETAIL_PICTURE')?></label>
+	</td>
+</tr>
+
+<tr>
+	<td>
+		&nbsp;
+	</td>
+	<td>
+		<label><input type="checkbox" name="PREVIEW_PICTURE" <? if (COption::GetOptionString('imageimport', 'PREVIEW_PICTURE', 'Y') == 'Y'):?>checked="checked"<? endif; ?>/><?=GetMessage('II_OPT_PREVIEW_PICTURE')?></label>
+	</td>
+</tr>
+
 <script type="text/javascript">
 ;(function(){
 
@@ -292,7 +321,7 @@ $tabControl->BeginNextTab();
 
 	var ii_controller = setInterval(function(){
 		if(ii_count < count_images) {
-			CHttpRequest.Send('ii_async_worker.php?name=' + images_to_import[ii_count]);
+			CHttpRequest.Send('ii_async_iblock.php?name=' + images_to_import[ii_count]);
 			ii_count++;
 		} else {
 			ii_more_import.style.display = 'block';

@@ -43,5 +43,7 @@ $MESS['II_VIS_IMPORTED'] = 'Imported';
 $MESS['II_VIS_NOT_IMPORTED'] = 'Errors';
 
 $MESS['II_NEW_IMPORT'] = 'New import';
-
+$MESS['II_OPT_HEADING_COMMON_PICTURES'] = 'Pictures';
+$MESS['II_OPT_DETAIL_PICTURE'] = 'Set detail picture';
+$MESS['II_OPT_PREVIEW_PICTURE'] = 'Set preview picture';
 ?>
