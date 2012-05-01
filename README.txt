@@ -10,8 +10,8 @@ Install
  - 'image import' will appear in administer site section, in services
 
 Plans
- - english lang files,
  - creating preview and detail picture as options, 
+ - option to place image to additional fields, 
  - import to medialibrary 
 
 Author
