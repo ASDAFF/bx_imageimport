@@ -24,22 +24,44 @@ $file_info = pathinfo($file_path);
 
 CModule::IncludeModule('iblock');
 
-$arPicture = CFile::MakeFileArray($file_path);
+$iblockID = COption::GetOptionString('imageimport', 'iblock', '0');
+$iblockFields = CIBlock::GetArrayByID($iblockID, 'FIELDS');
+
+$detailPicture_sizes = array(
+	'width' => $iblockFields['DETAIL_PICTURE']['DEFAULT_VALUE']['WIDTH'],
+	'height' => $iblockFields['DETAIL_PICTURE']['DEFAULT_VALUE']['HEIGHT'],
+);
+$previewPicture_sizes = array(
+	'width' => $iblockFields['PREVIEW_PICTURE']['DEFAULT_VALUE']['WIDTH'],
+	'height' => $iblockFields['PREVIEW_PICTURE']['DEFAULT_VALUE']['HEIGHT'], 
+);
+
+$detailPicture_source = $file_info['dirname'] . '/_detail_' . $file_name;
+$previewPicture_source = $file_info['dirname'] . '/_preview_' . $file_name;
+
+CFile::ResizeImageFile($file_path, $detailPicture_source ,$detailPicture_sizes);
+CFile::ResizeImageFile($file_path, $previewPicture_source, $previewPicture_sizes);
+
+$arDetailPicture = CFile::MakeFileArray($detailPicture_source);
+$arPreviewPicture = CFile::MakeFileArray($previewPicture_source);
 
 $arFields = array(
 	'NAME' => $file_info['filename'],
 	'PREVIEW_TEXT' => $file_info['filename'],
-	'DETAIL_PICTURE' => $arPicture,
+	'DETAIL_PICTURE' => $arDetailPicture,
+	'PREVIEW_PICTURE' => $arPreviewPicture,
 	'ACTIVE' => 'Y',
 	'IBLOCK_TYPE_ID' => COption::GetOptionString('imageimport', 'type', '0'),
-	'IBLOCK_ID' => COption::GetOptionString('imageimport', 'iblock', '0'),
+	'IBLOCK_ID' => $iblockID,
 	'IBLOCK_SECTION_ID' => COption::GetOptionString('imageimport', 'section', '0'),
 	'MODIFIED_BY' => $USER->GetID(),
 );
 
-$iblock = new CIBlockElement();
-$id = $iblock->Add($arFields);
+$iblockElement = new CIBlockElement();
+$id = $iblockElement->Add($arFields);
 
+unlink($detailPicture_source);
+unlink($previewPicture_source);
 
 if (COption::GetOptionString('imageimport', 'clear_after', 'N') == 'Y') {
 	unlink($file_path);
