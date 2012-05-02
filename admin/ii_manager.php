@@ -45,55 +45,66 @@ if (isset($_POST['form_id']) and $_POST['form_id'] == 'ii_manager_form') {
 		COption::SetOptionString('imageimport' , $checkbox_option, ($_POST[$checkbox_option]=='on')?'Y':'N');
 	}
 
-	// check data
-	$importing = true;
-	$images_to_import = array();
-	$settings_errors = array();
-	$import_dir_path = '';
-	switch ($_POST['rel_dir']) {
-		case 'document':
-			$import_dir_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $_POST['search_dir']; 
-			break;
-		case 'server':
-			$import_dir_path = $_POST['search_dir'];
-	}
-	if (!file_exists($import_dir_path)) {
-		CAdminMessage::ShowMessage(array(
-			'MESSAGE' => GetMessage('II_SEARCH_DIR_NOT_EXISTS_TITLE'),
-			'DETAILS' => GetMessage('II_SEARCH_DIR_NOT_EXISTS_MSG'),
-			'TYPE' => 'ERROR',
-			'HTML' => false,
-		));
-		$importing = false;
-	} else {
-		if (!is_dir($import_dir_path)) {
+	$importing = ($_POST['importing'] == 'Y')?true:false;
+	if ($importing) {
+		// check data
+		$images_to_import = array();
+		$settings_errors = array();
+		$import_dir_path = '';
+		switch ($_POST['rel_dir']) {
+			case 'document':
+				$import_dir_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $_POST['search_dir']; 
+				break;
+			case 'server':
+				$import_dir_path = $_POST['search_dir'];
+		}
+		if (!file_exists($import_dir_path)) {
 			CAdminMessage::ShowMessage(array(
-				'MESSAGE' => GetMessage('II_SEARCH_DIR_NOT_DIR_TITLE'),
-				'DETAILS' => GetMessage('II_SEARCH_DIR_NOT_DIR_MSG'),
+				'MESSAGE' => GetMessage('II_SEARCH_DIR_NOT_EXISTS_TITLE'),
+				'DETAILS' => GetMessage('II_SEARCH_DIR_NOT_EXISTS_MSG'),
 				'TYPE' => 'ERROR',
 				'HTML' => false,
 			));
 			$importing = false;
 		} else {
-			$dir_handler = opendir($import_dir_path);
-				while ($dh_path = readdir($dir_handler)) {
-					if (is_file($import_dir_path . '/' . $dh_path)) {
-						$path_info = pathinfo($import_dir_path . $dh_path);
-						if (in_array($path_info['extension'], explode(',', COption::GetOptionString('imageimport', 'file_types', 'jpg,gif,png')))) {
-							$images_to_import[] = $dh_path;
-						}
-					}
-				}
-			closedir($dir_handler);
-			if (empty($images_to_import)) {
+			if (!is_dir($import_dir_path)) {
 				CAdminMessage::ShowMessage(array(
-					'MESSAGE' => GetMessage('II_SEARCH_DIR_EMPTY_TITLE'),
-					'DETAILS' => GetMessage('II_SEARCH_DIR_EMPTY_MSG'),
+					'MESSAGE' => GetMessage('II_SEARCH_DIR_NOT_DIR_TITLE'),
+					'DETAILS' => GetMessage('II_SEARCH_DIR_NOT_DIR_MSG'),
 					'TYPE' => 'ERROR',
 					'HTML' => false,
 				));
 				$importing = false;
+			} else {
+				$dir_handler = opendir($import_dir_path);
+					while ($dh_path = readdir($dir_handler)) {
+						if (is_file($import_dir_path . '/' . $dh_path)) {
+							$path_info = pathinfo($import_dir_path . $dh_path);
+							if (in_array($path_info['extension'], explode(',', COption::GetOptionString('imageimport', 'file_types', 'jpg,gif,png')))) {
+								$images_to_import[] = $dh_path;
+							}
+						}
+					}
+				closedir($dir_handler);
+				if (empty($images_to_import)) {
+					CAdminMessage::ShowMessage(array(
+						'MESSAGE' => GetMessage('II_SEARCH_DIR_EMPTY_TITLE'),
+						'DETAILS' => GetMessage('II_SEARCH_DIR_EMPTY_MSG'),
+						'TYPE' => 'ERROR',
+						'HTML' => false,
+					));
+					$importing = false;
+				}
 			}
+		}
+	} else {
+		if ($_POST['add_property'] == 'N') {
+			CAdminMessage::ShowMessage(array(
+				'MESSAGE' => GetMessage('II_OPT_SAVED_OK_TITLE'),
+				'DETAILS' => GetMessage('II_OPT_SAVED_OK_MSG'),
+				'TYPE' => 'OK',
+				'HTML' => false,
+			));
 		}
 	}
 }
@@ -121,6 +132,8 @@ $options_save = array(
 <?if (!$importing):?>
 <form method="POST" action="<?= $APPLICATION->GetCurPage()?>?lang=<?= LANGUAGE_ID?>" name="ii_manager_form">
 	<input type="hidden" name="form_id" value="ii_manager_form" />
+	<input type="hidden" name="importing" id="importing" value="Y" />
+	<input type="hidden" name="add_property" id="add_property" value="N" />
 <?
 $aTabs = array(
 	array(
@@ -233,6 +246,49 @@ $tabControl->BeginNextTab();
 	</td>
 </tr>
 
+<tr class="heading">
+	<td colspan="2" align="center">
+		<?=GetMessage('II_OPT_HEADING_PROPERTIES')?>
+	</td>
+</tr>
+
+<?php 
+$additional_properties = COption::GetOptionString('imageimport', 'additional_properties', '');
+if (!empty($additional_properties))	
+	$additional_properties = unserialize($additional_properties);
+else $additional_properties = array();
+if ($_POST['add_property'] == 'Y')
+	$additional_properties[] = array(
+		'id' => '',
+		'width' => '',
+		'height' => '',
+	);
+foreach($additional_properties as $additional_property):
+?>
+<tr>
+	<td>
+		&nbsp;
+	</td>
+	<td>
+		<label><?php print GetMessage('II_MANAGER_ADDITIONAL_PROPERTY_ID'); ?></label><br />
+		<input type="text" name="additional_properties[]" value="<?=$additional_property['id'];?>" style="width:300px;" /><br />
+		<label><?php print GetMessage('II_MANAGER_WIDTH'); ?></label>
+		<input type="text" name="additional_properties_width[]" style="width:70px;" /> &nbsp;
+		<label><?php print GetMessage('II_MANAGER_HEIGHT'); ?></label>
+		<input type="text" name="additional_properties_height[]" style="width:70px;" />
+	</td>
+</tr>
+<?php endforeach; ?>
+
+<tr>
+	<td>
+		&nbsp;
+	</td>
+	<td>
+		<input type="button" id="add_property_button" value="<?=GetMessage('II_MANAGER_ADD_PROPERTY_BUTTON_VALUE');?>" />
+	</td>
+</tr>
+
 <script type="text/javascript">
 ;(function(){
 
@@ -280,7 +336,26 @@ $tabControl->BeginNextTab();
 <?$tabControl->EndTab();?>
 
 <?$tabControl->Buttons();?>
-<input type="submit" value="<?=GetMessage('II_MANAGER_SUBMIT')?>" />
+<input type="submit" id="submit_button" value="<?=GetMessage('II_MANAGER_SUBMIT')?>" />
+<input type="button" id="save_button" value="<?=GetMessage('II_MANAGER_SAVE_SETTINGS')?>" />
+<script type="text/javascript">
+;(function(){
+	var save_button = document.getElementById('save_button');
+	var submit_button = document.getElementById('submit_button');
+	var importing = document.getElementById('importing');
+	var add_property_button = document.getElementById('add_property_button');
+	var add_property = document.getElementById('add_property');
+	save_button.onclick = function() {
+		importing.value = 'N';
+		submit_button.click();
+	}
+	add_property_button.onclick = function() {
+		importing.value = 'N',
+		add_property.value = 'Y',
+		submit_button.click();
+	}
+})();
+</script>
 
 <?$tabControl->End();?>
 

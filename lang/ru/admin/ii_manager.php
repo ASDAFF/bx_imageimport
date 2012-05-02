@@ -46,4 +46,10 @@ $MESS['II_NEW_IMPORT'] = 'Новый импорт';
 $MESS['II_OPT_HEADING_COMMON_PICTURES'] = 'Изображения';
 $MESS['II_OPT_DETAIL_PICTURE'] = 'Устанавливать как детальное изображние';
 $MESS['II_OPT_PREVIEW_PICTURE'] = 'Устанавливать как изображние для анонса';
+$MESS['II_MANAGER_SAVE_SETTINGS'] = 'Сохранить настройки';
+$MESS['II_OPT_HEADING_PROPERTIES'] = 'Дополнительные свойста';
+$MESS['II_MANAGER_ADD_PROPERTY_BUTTON_VALUE'] = 'Добавить дополнительное свойство';
+$MESS['II_MANAGER_ADDITIONAL_PROPERTY_ID'] = 'Код или номер дополнительного свойства';
+$MESS['II_MANAGER_WIDTH'] = 'Ширина:';
+$MESS['II_MANAGER_HEIGHT'] = 'Высота:';
 ?>

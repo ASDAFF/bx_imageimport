@@ -46,4 +46,10 @@ $MESS['II_NEW_IMPORT'] = 'New import';
 $MESS['II_OPT_HEADING_COMMON_PICTURES'] = 'Pictures';
 $MESS['II_OPT_DETAIL_PICTURE'] = 'Set detail picture';
 $MESS['II_OPT_PREVIEW_PICTURE'] = 'Set preview picture';
+$MESS['II_MANAGER_SAVE_SETTINGS'] = 'Save settings';
+$MESS['II_OPT_HEADING_PROPERTIES'] = 'Additional properties';
+$MESS['II_MANAGER_ADD_PROPERTY_BUTTON_VALUE'] = 'Set image for additional property';
+$MESS['II_MANAGER_ADDITIONAL_PROPERTY_ID'] = 'Additional property code or id';
+$MESS['II_MANAGER_WIDTH'] = 'Width:';
+$MESS['II_MANAGER_HEIGHT'] = 'Height:';
 ?>
