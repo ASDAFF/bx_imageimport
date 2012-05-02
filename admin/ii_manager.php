@@ -79,7 +79,7 @@ if (isset($_POST['form_id']) and $_POST['form_id'] == 'ii_manager_form') {
 				while ($dh_path = readdir($dir_handler)) {
 					if (is_file($import_dir_path . '/' . $dh_path)) {
 						$path_info = pathinfo($import_dir_path . $dh_path);
-						if (in_array($path_info['extension'], explode(',', COption::GetOptionString('imageimport', 'extentions', 'jpg,gif,png')))) {
+						if (in_array($path_info['extension'], explode(',', COption::GetOptionString('imageimport', 'file_types', 'jpg,gif,png')))) {
 							$images_to_import[] = $dh_path;
 						}
 					}
@@ -180,7 +180,7 @@ $tabControl->BeginNextTab();
 		<label for='select-type'><?=GetMessage('II_OPT_LABEL_TYPE')?></label>
 	</td>
 	<td>
-		<select name='select-type' id='select-type'>
+		<select name='select-type' id='select-type' size="40">
 				<option value="notype"></option>
 			<? foreach($arIBlockTypeList as $iblock_type): ?>
 				<option value="<?=$iblock_type['ID']?>"><?=$iblock_type['NAME']?></option>
@@ -194,7 +194,7 @@ $tabControl->BeginNextTab();
 		<label for="select-iblock"><?=GetMessage('II_OPT_LABEL_IBLOCK')?></label>
 	</td>
 	<td>
-		<select name="select-iblock" id="select-iblock">
+		<select name="select-iblock" id="select-iblock" size="40">
 		</select>
 	</td>
 </tr>
@@ -204,7 +204,7 @@ $tabControl->BeginNextTab();
 		<label for="select-section"><?=GetMessage('II_OPT_LABEL_SECTION')?></label>
 	</td>
 	<td>
-		<select name="select-section" id="select-section">
+		<select name="select-section" id="select-section" size="40">
 		</select>
 	</td>
 </tr>
