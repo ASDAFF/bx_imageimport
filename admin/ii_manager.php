@@ -180,7 +180,7 @@ $tabControl->BeginNextTab();
 		<label for='select-type'><?=GetMessage('II_OPT_LABEL_TYPE')?></label>
 	</td>
 	<td>
-		<select name='select-type' id='select-type'>
+		<select name='select-type' id='select-type' style="width:300px;">
 				<option value="notype"></option>
 			<? foreach($arIBlockTypeList as $iblock_type): ?>
 				<option value="<?=$iblock_type['ID']?>"><?=$iblock_type['NAME']?></option>
@@ -194,7 +194,7 @@ $tabControl->BeginNextTab();
 		<label for="select-iblock"><?=GetMessage('II_OPT_LABEL_IBLOCK')?></label>
 	</td>
 	<td>
-		<select name="select-iblock" id="select-iblock">
+		<select name="select-iblock" id="select-iblock" style="width:300px;">
 		</select>
 	</td>
 </tr>
@@ -204,7 +204,7 @@ $tabControl->BeginNextTab();
 		<label for="select-section"><?=GetMessage('II_OPT_LABEL_SECTION')?></label>
 	</td>
 	<td>
-		<select name="select-section" id="select-section">
+		<select name="select-section" id="select-section" style="width:300px;">
 		</select>
 	</td>
 </tr>
