@@ -10,7 +10,6 @@ Install
  - 'image import' will appear in administer site section, in services
 
 Plans
- - option to place image to additional fields, 
  - import to medialibrary 
 
 Author
