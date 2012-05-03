@@ -37,13 +37,39 @@ if (isset($_POST['form_id']) and $_POST['form_id'] == 'ii_manager_form') {
 	}
 	
 	$checkbox_options = array(
-		'clear_after',
-		'DETAIL_PICTURE',
-		'PREVIEW_PICTURE',
+		'clear_after' => 'clear_after',
+		'field_DETAIL_PICTURE' => 'DETAIL_PICTURE',
+		'field_PREVIEW_PICTURE' => 'PREVIEW_PICTURE',
 	);
-	foreach($checkbox_options as $checkbox_option) {
-		COption::SetOptionString('imageimport' , $checkbox_option, ($_POST[$checkbox_option]=='on')?'Y':'N');
+	foreach($checkbox_options as $checkbox_option => $option_id) {
+		COption::SetOptionString('imageimport' , $checkbox_option, ($_POST[$option_id]=='on')?'Y':'N');
 	}
+	
+	
+	// additional fields
+	//print_r($_POST['additional_properties']);
+	if (!empty($_POST['additional_properties'])) {
+		$additional_properties_save = array();
+		foreach($_POST['additional_properties'] as $key => $name) {
+			if (!empty($name)) {
+				COption::SetOptionString('imageimport', 'property_' . $name, 'Y');
+				$additional_properties_save[$name] = array(
+					'id' => $name,
+					'width' => $_POST['additional_properties_width'][$key],
+					'height' => $_POST['additional_properties_height'][$key],
+					'type' => 'property',
+					'sizes' => 'option',
+				);
+			}
+		}
+		/*print '<pre>';
+		print_r($additional_properties_save);
+		print '</pre>';*/
+		COption::SetOptionString('imageimport', 'additional_properties', serialize($additional_properties_save));
+	}
+	
+	
+	
 
 	$importing = ($_POST['importing'] == 'Y')?true:false;
 	if ($importing) {
@@ -271,10 +297,22 @@ foreach($additional_properties as $additional_property):
 	<td>
 		<label><?php print GetMessage('II_MANAGER_ADDITIONAL_PROPERTY_ID'); ?></label><br />
 		<input type="text" name="additional_properties[]" value="<?=$additional_property['id'];?>" style="width:300px;" /><br />
+	</td>
+</tr>
+<tr>
+	<td>
+		&nbsp;
+	</td>
+	<td>
 		<label><?php print GetMessage('II_MANAGER_WIDTH'); ?></label>
-		<input type="text" name="additional_properties_width[]" style="width:70px;" /> &nbsp;
+		<input type="text" name="additional_properties_width[]" value="<?=$additional_property['width'];?>" style="width:90px;" /> &nbsp;
 		<label><?php print GetMessage('II_MANAGER_HEIGHT'); ?></label>
-		<input type="text" name="additional_properties_height[]" style="width:70px;" />
+		<input type="text" name="additional_properties_height[]" value="<?=$additional_property['height'];?>" style="width:90px;" />
+	</td>
+</tr>
+<tr>
+	<td colspan="2" align="center">
+		<hr />
 	</td>
 </tr>
 <?php endforeach; ?>

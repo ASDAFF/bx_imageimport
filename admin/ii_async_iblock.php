@@ -48,10 +48,16 @@ $pictures = array(
 	),
 );
 
+$additional_pictures = COption::GetOptionString('imageimport', 'additional_properties', '');
+if (!empty($additional_pictures)) {
+	$additional_pictures = unserialize($additional_pictures);
+	$pictures = array_merge($pictures, $additional_pictures);
+}
+
 $unlink_queue = array();
 
 foreach($pictures as $title => $options) {
-	if (COption::GetOptionString('imageimport', $title, 'N') == 'Y') {
+	if (COption::GetOptionString('imageimport', sprintf('%s_%s', $options['type'], $title), 'N') == 'Y') {
 		$picture_sizes = array('width' => 0, 'height' => 0);
 		switch ($options['sizes']) {
 			case 'iblock':
@@ -82,7 +88,7 @@ foreach($pictures as $title => $options) {
 				$arFields[$title] = $picture_array;
 				break;
 			case 'property':
-				$arFields['PROPERTIES'][$options['id']] = $picture_array();
+				$arFields['PROPERTY_VALUES'][$options['id']] = $picture_array;
 				break;
 		}
 	}
