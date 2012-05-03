@@ -49,7 +49,6 @@ if (isset($_POST['form_id']) and $_POST['form_id'] == 'ii_manager_form') {
 	if ($importing) {
 		// check data
 		$images_to_import = array();
-		$settings_errors = array();
 		$import_dir_path = '';
 		switch ($_POST['rel_dir']) {
 			case 'document':
