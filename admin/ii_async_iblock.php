@@ -37,6 +37,12 @@ $arFields = array(
 		'MODIFIED_BY' => $USER->GetID(),
 );
 
+$numeric_match = array();
+preg_match('/\d+/', $file_info['filename'], $numeric_match);
+if ($numeric_match[0]) {
+	$arFields['SORT'] = $numeric_match[0];
+}
+
 $pictures = array(
 	'DETAIL_PICTURE' => array(
 		'type' => 'field',
