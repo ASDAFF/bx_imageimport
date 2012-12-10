@@ -10,6 +10,7 @@ Install
  - 'image import' will appear in administer site section, in services
 
 Plans
+ - get sort index from filename
  - import to medialibrary 
 
 Author
