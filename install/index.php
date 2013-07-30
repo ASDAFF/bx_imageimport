@@ -5,7 +5,7 @@ Class imageimport extends CModule {
 	public $MODULE_VERSION;
 	public $MODULE_VERSION_DATE;
 	public $MODULE_NAME = 'Image Import';
-	public $MODULE_DESCRIPTION = 'Folder image import';
+	public $MODULE_DESCRIPTION = 'Folder image import (<a href="https://github.com/AlexKluev/bx_imageimport">https://github.com/AlexKluev/bx_imageimport</a>)';
 	public $MODULE_GROUP_RIGHTS = 'Y';
 
 	public function __construct() {

@@ -1,4 +1,4 @@
 <?
-$MESS['II_MENU_MANAGER_TEXT'] = 'èìïîðò èçîáðàæåíèé';
-$MESS['II_MENU_MANAGER_TITLE'] = 'Èìïîðò Èçîáðàæåíèé';
+$MESS['II_MENU_MANAGER_TEXT'] = 'Ð¸Ð¼Ð¿Ð¾Ñ€Ñ‚ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ð¹';
+$MESS['II_MENU_MANAGER_TITLE'] = 'Ð˜Ð¼Ð¿Ð¾Ñ€Ñ‚ Ð˜Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ð¹';
 ?>

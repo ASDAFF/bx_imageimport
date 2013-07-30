@@ -1,4 +1,4 @@
 <?php
-$MESS['II_CHOSE_IBLOCK'] = '<Выберите инфоблок>';
-$MESS['II_ROOT_SECTION'] = '.корень';
+$MESS['II_CHOSE_IBLOCK'] = '<Р’С‹Р±РµСЂРёС‚Рµ РёРЅС„РѕР±Р»РѕРє>';
+$MESS['II_ROOT_SECTION'] = '.РєРѕСЂРµРЅСЊ';
 ?>
